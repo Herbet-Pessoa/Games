@@ -29,13 +29,25 @@ public class Game extends Canvas implements Runnable {
         g.fillRect(0,0,480,480);
     }
 
+    public static void main(String args[]){
+        Game game = new Game();
+        JFrame = new JFrame("Snake");
+        frame.add(game);
+        frame.setResizable(false);
+        
+    }
+
     @Override
     public void run(){
 
         while (true){
             tick();
             render();
-            Thread.sleep(1000/60);
+            try{
+                Thread.sleep(1000/60);
+            } catch(InterruptedException e){
+                e.printStackTrace();
+            }
         }
 
 
