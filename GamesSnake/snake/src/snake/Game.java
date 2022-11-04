@@ -16,7 +16,11 @@ import javax.swing.JFrame;
 
 public class Game extends Canvas implements Runnable, KeyListener {
 
-    public Node[] nodeSnake = new Node[20];
+    final int HIGH_SCREW = 230;
+    final int WIDTH_SCREW = 200;
+    final int LENGTH_SNAKE = 20;
+
+    public Node[] nodeSnake = new Node[LENGTH_SNAKE];
 
     public boolean left, right, down, up;
 
@@ -25,7 +29,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
     public int appleX = 0, appleY = 0;
 
     public Game(){
-        this.setPreferredSize(new Dimension(480,480));
+        this.setPreferredSize(new Dimension(WIDTH_SCREW, HIGH_SCREW));
         for(int i=0; i < nodeSnake.length; i++){
             nodeSnake[i] = new Node(0,0);
         }
@@ -38,6 +42,18 @@ public class Game extends Canvas implements Runnable, KeyListener {
         for(int i = nodeSnake.length-1; i>0; i--){
             nodeSnake[i].x = nodeSnake[i-1].x;
             nodeSnake[i].y = nodeSnake[i-1].y;
+        }
+
+        //Trazendo a cobrinha de volta do outro lado da parede
+        if(nodeSnake[0].x + LENGTH_SNAKE < 0){
+            nodeSnake[0].x = WIDTH_SCREW;
+        }else if(nodeSnake[0].x >= WIDTH_SCREW){
+            nodeSnake[0].x = -10;
+        }
+        if(nodeSnake[0].y + LENGTH_SNAKE < 0){
+            nodeSnake[0].y = HIGH_SCREW;
+        }else if(nodeSnake[0].y >= HIGH_SCREW){
+            nodeSnake[0].y = -10;
         }
 
         //movimento
@@ -53,10 +69,10 @@ public class Game extends Canvas implements Runnable, KeyListener {
 
         //colisão com maça
         if (new Rectangle(nodeSnake[0].x, nodeSnake[0].y, 10, 10).intersects(new Rectangle(appleX, appleY, 10, 10))){
-            appleX = new Random().nextInt(480-10);
-            appleY = new Random().nextInt(480-10);
+            appleX = new Random().nextInt(WIDTH_SCREW-10);
+            appleY = new Random().nextInt(HIGH_SCREW-10);
             score++;
-            System.out.println();
+            System.out.println("Pontos: " + score);
         }
     }
 
@@ -70,11 +86,14 @@ public class Game extends Canvas implements Runnable, KeyListener {
 
         Graphics g = bs.getDrawGraphics();
         g.setColor(Color.black);
-        g.fillRect(0,0,480,480);
+        g.fillRect(0,0, WIDTH_SCREW, HIGH_SCREW);
         for(int i=0; i < nodeSnake.length; i++){
             g.setColor(Color.blue);
             g.fillRect(nodeSnake[i].x, nodeSnake[i].y, 10, 10);
         }
+
+        g.setColor(Color.RED);
+        g.fillRect(appleX, appleY, 10, 10);
 
         g.dispose();
         bs.show();
